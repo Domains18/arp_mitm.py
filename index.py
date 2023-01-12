@@ -26,5 +26,11 @@ def isGateway(gatewayIp):
         if gatewayIp in row:
             return True 
     return False
-   
-    
+
+def getInterfaceNames():
+    os.chdir("/sys/class/net")
+    interfaceNames = os.listdir()
+    return interfaceNames
+
+
+          
