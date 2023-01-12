@@ -3,7 +3,7 @@ import subprocess
 import sys
 import time
 import os
-from ipaddress import IPv4Address
+from ipaddress import IPv4Network
 import threading
 
 # working dir
@@ -107,4 +107,20 @@ def printArpRes(arpRes):
                     return choice
             except:
                 print("Invalid Choice")
+
+def getCmdArgs():
+    ipRange = None
+    if len(sys.argv) - 1 > 0 and sys.argv[1] != "ipRange":
+        print("-ipRange flag not specified")
+        return ipRange
+    elif len(sys.argv) -1 > 0 and sys.argv[1] == "-ipRange":
+        try:
+            print(f"{IPv4Network(sys.argv[2])}")
+            ipRange = sys.argv[2]
+            print("valid CLI ip detected")
+        except:
+            print("Invalid CLI Argument detected")
+    return ipRange
+
+sudoCheck()
 
