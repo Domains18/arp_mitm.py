@@ -33,4 +33,27 @@ def getInterfaceNames():
     return interfaceNames
 
 
-          
+def matchInterfaceName(row):
+    interfaceName = getInterfaceNames()
+    for iface in interfaceName:
+        if iface in row:
+            return iface
+
+def gatewayInfo(networkInfo):
+    result = subprocess.run(["route", "-n"], capture_output=True).stdout.decode().split("\n")
+    gateways = []
+    for iface in networkInfo:
+        for row in result:
+            if iface["ip"] in row
+            ifaceName = matchInterfaceName(row)
+            gateways.append({"iface" : ifaceName, "ip" : iface["ip"], "mac" : iface["mac"]})
+    return gateways
+
+def clients(arpRes, gatewayRes):
+    clientList = []
+    for gateway in gatewayRes:
+        for item in arpRes:
+            if gateway["ip"] != item["ip"]:
+                clientList.append(item)
+    return clientList
+
