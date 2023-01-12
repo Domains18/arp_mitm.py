@@ -124,3 +124,23 @@ def getCmdArgs():
 
 sudoCheck()
 
+ipRange = getCmdArgs()
+if ipRange == None:
+    print("No valid ip range Specified,")
+    exit()
+    
+allowIpForwading()
+
+arpRes = arpScan(ipRange)
+if len(arpRes) == 0:
+    print("Connection ckeck returned False, check your connection")
+    exit()
+    
+gateways = gatewayInfo(arpRes)
+gatewayGetInfo = gateways[0]
+clientInfo = clients(arpRes, gateways)
+if len(clientInfo) == 0:
+    print("No clients found")
+    exit()
+    
+choice = printArpRes(clientInfo)
